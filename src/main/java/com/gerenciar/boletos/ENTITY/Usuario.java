@@ -7,6 +7,7 @@ import java.io.Serial;
 import java.util.List;
 
 @Entity
+@Table(name = "usuario")
 public class Usuario {
 
     @Serial
@@ -31,8 +32,7 @@ public class Usuario {
     }
 
     public Usuario() {
-        cpf.replace(".", "");
-        cpf.replace("-", "");
+
     }
 
     public String getNome() {
@@ -56,6 +56,8 @@ public class Usuario {
     }
 
     public void setCpf(String cpf) {
+        cpf.replace(".", "");
+        cpf.replace("-", "");
         this.cpf = cpf;
     }
 

@@ -31,7 +31,6 @@ public class BoletoService {
     }
 
     public Boleto createBoleto(Boleto boleto, long idUsuario) throws RegraNegocioException {
-
         Optional<Usuario> byId = usuarioRepository.findById(idUsuario);
 
         if(byId.isEmpty()){
@@ -47,5 +46,28 @@ public class BoletoService {
 
         return boletoRepository.save(boleto);
 
+    }
+
+    public Boleto pagarBoleto(double valor, Long id) throws RegraNegocioException{
+
+        Optional<Boleto> byId = boletoRepository.findById(id);
+
+        Boleto boleto = byId.orElseThrow(() ->
+                new RegraNegocioException("Boleto com ID " + id + " não existe")
+        );
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        if(localDateTime.isAfter(byId.get().getDataVencimento())){
+            byId.get().setValor(byId.get().getValor()+100);
+        }
+
+        if(valor < byId.get().getValor()){
+            throw new RegraNegocioException("O valor pagado é inferior ao valor do boleto " +
+                    "Valor do boelto: "+byId.get().getValor());
+        }
+
+        byId.get().setAtivo(false);
+
+        return boletoRepository.save(boleto);
     }
 }

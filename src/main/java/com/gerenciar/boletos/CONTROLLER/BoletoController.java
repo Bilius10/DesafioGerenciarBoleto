@@ -1,9 +1,7 @@
 package com.gerenciar.boletos.CONTROLLER;
 
 import com.gerenciar.boletos.DAO.BoletoDAO;
-import com.gerenciar.boletos.DAO.UsuarioDAO;
 import com.gerenciar.boletos.ENTITY.Boleto;
-import com.gerenciar.boletos.ENTITY.Usuario;
 import com.gerenciar.boletos.EXCEPTION.RegraNegocioException;
 import com.gerenciar.boletos.SERVICE.BoletoService;
 import jakarta.validation.Valid;
@@ -40,7 +38,7 @@ public class BoletoController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUsuario(@RequestBody @Valid BoletoDAO boletoDAO) throws RegraNegocioException {
+    public ResponseEntity<Object> createBoleto(@RequestBody @Valid BoletoDAO boletoDAO) throws RegraNegocioException {
         Boleto boleto = new Boleto();
 
         BeanUtils.copyProperties(boletoDAO, boleto);
@@ -49,11 +47,23 @@ public class BoletoController {
         try {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(boletoService.createBoleto(boleto, boletoDAO.idUsuario()));
         }catch (RegraNegocioException r){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(r.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(r.getMessage());
         }
 
     }
 
-    
+    @PutMapping("{valor}/{id}")
+    public ResponseEntity<Object> pagarBoleto(@PathVariable double valor, @PathVariable Long id) throws RegraNegocioException {
+
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(boletoService.pagarBoleto(valor, id));
+
+        }catch (RegraNegocioException r){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(r.getMessage());
+
+        }
+    }
+
+
 
 }
